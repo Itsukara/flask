@@ -4,6 +4,11 @@ import click
 from flask import current_app, g
 from flask.cli import with_appcontext
 
+from pytz import utc
+from dateutil.tz import tzlocal
+
+def utc2local(datetime):
+    return utc.localize(datetime).astimezone(tzlocal())
 
 def get_db():
     """Connect to the application's configured database. The connection
@@ -16,6 +21,7 @@ def get_db():
             detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
+        g.utc2local = utc2local
 
     return g.db
 
